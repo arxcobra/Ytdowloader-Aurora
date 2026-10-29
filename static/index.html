@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Aurora — YouTube Downloader: Download MP3 Audio, MP4 Video, Shorts &amp; Playlists</title>
+<meta name="description" content="Aurora is a fast YouTube downloader for your own computer. Paste a video, Short, playlist or channel link, pick MP3 audio or MP4 video quality, choose a folder and download several videos at once." />
+<meta name="keywords" content="youtube downloader, download youtube mp3, download youtube mp4, youtube shorts downloader, playlist downloader, video to mp3, aurora" />
+<meta name="author" content="arafanh arx cobra" />
+<meta name="robots" content="index, follow" />
+<meta name="theme-color" content="#0a0e1a" />
+<link rel="canonical" href="http://127.0.0.1:8765/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Aurora" />
+<meta property="og:title" content="Aurora — YouTube Downloader (MP3, MP4, Shorts &amp; Playlists)" />
+<meta property="og:description" content="Save YouTube videos, Shorts and whole playlists as MP3 or MP4 — in a macOS-style interface that runs entirely on your machine." />
+<meta property="og:url" content="http://127.0.0.1:8765/" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Aurora — YouTube Downloader" />
+<meta name="twitter:description" content="Download YouTube videos, Shorts, playlists and channels as MP3 or MP4." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>" />
+<link rel="stylesheet" href="/style.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Aurora — YouTube Downloader",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Windows, macOS, Linux",
+  "author": { "@type": "Person", "name": "arafanh arx cobra" },
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "description": "Download YouTube videos, Shorts, playlists and channels as MP3 audio or MP4 video."
+}
+</script>
+</head>
+<body>
+
+<!-- Ambient motion background -->
+<div class="aurora" aria-hidden="true">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="grain"></div>
+</div>
+
+<main class="stage">
+
+  <!-- ============ Window chrome ============ -->
+  <header class="titlebar reveal">
+    <div class="lights" aria-hidden="true">
+      <span class="light red"></span>
+      <span class="light yellow"></span>
+      <span class="light green"></span>
+    </div>
+    <div class="title">
+      <span class="glyph">✦</span>
+      <span>Aurora</span>
+      <span class="title-sub">YouTube Downloader</span>
+    </div>
+    <div class="titlebar-right">
+      <span class="pill" id="enginePill" title="Download engine status">
+        <span class="dot"></span><span id="engineText">checking…</span>
+      </span>
+    </div>
+  </header>
+
+  <!-- ============ Hero / input ============ -->
+  <section class="hero">
+    <h1 class="headline reveal" style="--d:.04s">Save video, audio<br /><em>&amp; whole playlists.</em></h1>
+    <p class="subhead reveal" style="--d:.10s">
+      Paste a YouTube link — video, Short, or playlist. Pick a quality, choose a folder, done.
+      You can paste several links at once.
+    </p>
+
+    <form id="analyzeForm" class="searchbar reveal" style="--d:.16s" autocomplete="off">
+      <div class="search-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+      </div>
+      <textarea id="urlInput" rows="1" inputmode="url" spellcheck="false"
+             placeholder="https://youtube.com/watch?v=…
+https://youtube.com/shorts/…
+https://youtube.com/playlist?list=…"></textarea>
+      <button type="button" id="pasteBtn" class="ghost-btn" title="Paste from clipboard">Paste</button>
+      <button type="submit" id="analyzeBtn" class="primary-btn">
+        <span class="label">Analyze</span>
+        <span class="spinner" aria-hidden="true"></span>
+      </button>
+    </form>
+    <div id="linkCount" class="link-count" hidden></div>
+    <p class="paste-hint">
+      Paste several links at once — one per line, or separated by spaces.
+      Press <span class="hintkey">Enter</span> to analyze them all, then use <b>Download all</b>.
+    </p>
+  </section>
+
+  <!-- ============ Results ============ -->
+  <section id="results" class="results" aria-live="polite"></section>
+
+  <!-- ============ Queue ============ -->
+  <section id="queueSection" class="queue-section" hidden>
+    <div class="section-head">
+      <h2>Downloads</h2>
+      <div class="section-actions">
+        <span id="queueSummary" class="muted"></span>
+        <button id="openFolderBtn" class="ghost-btn small">Open folder</button>
+      </div>
+    </div>
+
+    <!-- Overall progress bar -->
+    <div id="overallBar" class="overall" hidden>
+      <div class="overall-top">
+        <span class="overall-label" id="overallLabel">Downloading…</span>
+        <span class="overall-pct" id="overallPct">0%</span>
+      </div>
+      <div class="overall-track">
+        <span class="overall-fill" id="overallFill"></span>
+      </div>
+      <div class="overall-meta" id="overallMeta"></div>
+    </div>
+
+    <div id="queueList" class="queue-list"></div>
+  </section>
+
+  <footer class="foot reveal" style="--d:.3s">
+    <span>Runs entirely on your computer · files never leave your machine</span>
+    <span class="sep">·</span>
+    <span id="saveToLabel">Saving to <b id="saveToPath">—</b></span>
+    <button id="changeDirBtn" class="link-btn">Change</button>
+    <span class="sep">·</span>
+    <a class="link-btn" href="/terms">Terms</a>
+    <a class="link-btn" href="/conditions">Conditions</a>
+    <span class="credit">made by <b>arafanh arx cobra</b></span>
+  </footer>
+</main>
+
+<!-- ============ Completion celebration ============ -->
+<div id="doneOverlay" class="done-overlay" hidden>
+  <div class="done-card" id="doneCard" tabindex="0">
+    <div class="done-check" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M4 12.5 9.5 18 20 6.5"/></svg>
+    </div>
+    <div class="done-text">
+      <div class="done-title">Work completed</div>
+      <div class="done-sub" id="doneSub">Your files are ready.</div>
+      <div class="done-hover" id="doneHover" role="tooltip"></div>
+    </div>
+    <button class="icon-btn" id="doneClose" aria-label="Close">✕</button>
+  </div>
+</div>
+
+<!-- ============ Folder picker modal ============ -->
+<div id="folderModal" class="modal-backdrop" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="folderTitle">
+    <div class="modal-head">
+      <h3 id="folderTitle">Choose a folder</h3>
+      <button class="icon-btn" id="folderClose" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-toolbar">
+      <button class="ghost-btn small" id="folderHome">⌂ Home</button>
+      <button class="ghost-btn small" id="folderUp">↑ Up</button>
+      <button class="ghost-btn small" id="folderNew">＋ New folder</button>
+      <button class="ghost-btn small" id="folderDefault">Downloads</button>
+    </div>
+    <div class="modal-path"><span id="folderPath">—</span></div>
+    <div id="folderDrives" class="drives"></div>
+    <div id="folderList" class="folder-list"></div>
+    <div class="modal-foot">
+      <span class="muted small-text">New subfolder name (optional)</span>
+      <input id="folderNewName" type="text" placeholder="My downloads" spellcheck="false" />
+      <div class="modal-actions">
+        <button class="ghost-btn" id="folderCancel">Cancel</button>
+        <button class="primary-btn" id="folderSelect">Select this folder</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toasts" class="toasts" aria-live="polite"></div>
+
+<script src="/app.js"></script>
+</body>
+</html>

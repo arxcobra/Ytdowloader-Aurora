@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# PyInstaller build output — the 55 MB Aurora.exe and the packaged ZIP stay
+# out of git; the launcher scripts in dist/ are kept.
+build/
+dist/*.exe
+*.zip
+
+# Local environment / secrets
+.env
+.env.*
+.dev.vars
+
+# Editor / OS junk
+.DS_Store
+Thumbs.db

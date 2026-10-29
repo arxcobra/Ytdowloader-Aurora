@@ -1,0 +1,13 @@
+# Normalise line endings, but keep Windows batch files CRLF on every checkout
+# so cmd.exe can parse them.
+* text=auto
+
+*.bat text eol=crlf
+*.spec text eol=crlf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
